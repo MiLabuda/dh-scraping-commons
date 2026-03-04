@@ -1,0 +1,7 @@
+[versions]
+spring-boot = "4.0.1"
+kotlin = "2.2.21"
+kotlin-logging = "7.0.14"
+
+[libraries]
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
