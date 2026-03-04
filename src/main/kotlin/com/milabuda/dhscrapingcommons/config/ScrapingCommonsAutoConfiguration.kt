@@ -2,10 +2,13 @@ package com.milabuda.dhscrapingcommons.config
 
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthChecker
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthProperties
+import com.milabuda.dhscrapingcommons.runner.JobRunnerSupport
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -24,4 +27,12 @@ class ScrapingCommonsAutoConfiguration {
         userAgentProvider: UserAgentProvider,
         properties: PortalHealthProperties
     ): PortalHealthChecker = PortalHealthChecker(webClientBuilder, userAgentProvider, properties)
+
+    @Bean
+    @ConditionalOnMissingBean
+    fun jobRunnerSupport(
+        healthChecker: PortalHealthChecker,
+        context: ApplicationContext,
+        @Value("\${spring.application.name:scraper}") appName: String
+    ): JobRunnerSupport = JobRunnerSupport(healthChecker, context, appName)
 }
