@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.milabuda"
-version = "0.1.0"
+version = "0.2.0"
 
 java {
     toolchain {
@@ -29,6 +29,9 @@ dependencies {
     // Spring — compileOnly: provided by the consuming Spring Boot app
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Resilience4j — implementation: used programmatically, not via AOP/annotations
+    implementation(libs.resilience4j.retry)
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")

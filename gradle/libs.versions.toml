@@ -2,6 +2,8 @@
 spring-boot = "4.0.1"
 kotlin = "2.2.21"
 kotlin-logging = "7.0.14"
+resilience4j = "2.3.0"
 
 [libraries]
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }

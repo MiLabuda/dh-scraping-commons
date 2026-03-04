@@ -3,7 +3,8 @@ package com.milabuda.dhscrapingcommons.healthcheck
 import com.milabuda.dhscrapingcommons.util.BROWSER_HEADERS
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.beans.factory.annotation.Value
+import io.github.resilience4j.retry.Retry
+import io.github.resilience4j.retry.RetryConfig
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -16,15 +17,45 @@ private val log = KotlinLogging.logger {}
 class PortalHealthChecker(
     private val webClientBuilder: WebClient.Builder,
     private val userAgentProvider: UserAgentProvider,
-    @Value("\${scraping.health.portal-url}") private val portalUrl: String
+    private val properties: PortalHealthProperties
 ) {
 
     private val webClient: WebClient by lazy { webClientBuilder.build() }
 
-    fun checkPortalStatus(): Boolean {
+    private val retry: Retry by lazy {
+        val config = RetryConfig.custom<Boolean>()
+            .maxAttempts(properties.retry.maxAttempts)
+            .waitDuration(properties.retry.waitDuration)
+            .retryOnResult { result -> !result }
+            .apply {
+                if (!properties.retry.ignoreExceptions) {
+                    retryOnException { true }
+                }
+            }
+            .build()
+
+        Retry.of("portalHealthChecker", config).also { retry ->
+            retry.eventPublisher.onRetry { event ->
+                log.warn { "Health check retry #${event.numberOfRetryAttempts} for [${properties.portalUrl}]" }
+            }
+            retry.eventPublisher.onError { event ->
+                log.error { "Health check failed after ${event.numberOfRetryAttempts} attempts for [${properties.portalUrl}]" }
+            }
+        }
+    }
+
+    fun checkPortalStatus(): Boolean =
+        Retry.decorateSupplier(retry) { doCheck() }
+            .runCatching { get() }
+            .getOrElse { e ->
+                log.error(e) { "Health check error for [${properties.portalUrl}]" }
+                false
+            }
+
+    private fun doCheck(): Boolean {
         val statusCode = webClient
             .get()
-            .uri(portalUrl)
+            .uri(properties.portalUrl)
             .header(HttpHeaders.USER_AGENT, userAgentProvider.provide())
             .headers { h -> BROWSER_HEADERS.forEach { (k, v) -> h.set(k, v) } }
             .exchangeToMono { response -> Mono.just(response.statusCode()) }
@@ -32,7 +63,7 @@ class PortalHealthChecker(
 
         val isUp = statusCode?.is2xxSuccessful ?: false
         if (!isUp) {
-            log.warn { "Health check for [$portalUrl] returned HTTP status: $statusCode" }
+            log.warn { "Health check for [${properties.portalUrl}] returned HTTP status: $statusCode" }
         }
         return isUp
     }
