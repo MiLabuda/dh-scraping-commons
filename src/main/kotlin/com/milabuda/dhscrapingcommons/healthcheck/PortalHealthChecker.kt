@@ -1,5 +1,7 @@
 package com.milabuda.dhscrapingcommons.healthcheck
 
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.Cache
 import com.milabuda.dhscrapingcommons.util.BROWSER_HEADERS
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -44,13 +46,22 @@ class PortalHealthChecker(
         }
     }
 
+    private val cache: Cache<String, Boolean> by lazy {
+        Caffeine.newBuilder()
+            .expireAfterWrite(properties.cache.ttl)
+            .maximumSize(properties.cache.maximumSize)
+            .build()
+    }
+
     fun checkPortalStatus(): Boolean =
-        Retry.decorateSupplier(retry) { doCheck() }
-            .runCatching { get() }
-            .getOrElse { e ->
-                log.error(e) { "Health check error for [${properties.portalUrl}]" }
-                false
-            }
+        cache.get("status") {
+            Retry.decorateSupplier(retry) { doCheck() }
+                .runCatching { get() }
+                .getOrElse { e ->
+                    log.error(e) { "Health check error for [${properties.portalUrl}]" }
+                    false
+                }
+        }!!
 
     private fun doCheck(): Boolean {
         val statusCode = webClient

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.milabuda"
-version = "0.2.0"
+version = "0.4.0"
 
 java {
     toolchain {
@@ -32,6 +32,9 @@ dependencies {
 
     // Resilience4j — implementation: used programmatically, not via AOP/annotations
     implementation(libs.resilience4j.retry)
+
+    // Caffeine — programmatic cache, no Spring Cache/AOP needed
+    implementation(libs.caffeine)
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
