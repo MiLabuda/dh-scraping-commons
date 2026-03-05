@@ -7,7 +7,27 @@ plugins {
 }
 
 group = "com.milabuda"
-version = "0.5.0"
+version = resolveVersion()
+
+fun resolveVersion(): String {
+    // 1. In GitHub Actions on tag push: GITHUB_REF_NAME = "0.5.0"
+    System.getenv("GITHUB_REF_NAME")
+        ?.takeIf { it.isNotBlank() }
+        ?.let { return it }
+
+    // 2. Locally on a tagged commit: git describe --tags --exact-match
+    runCatching {
+        ProcessBuilder("git", "describe", "--tags", "--exact-match")
+            .directory(projectDir)
+            .start()
+            .inputStream.bufferedReader().readLine()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { return it }
+    }
+
+    // 3. Fallback for local development (untagged commit)
+    return "0.0.0-SNAPSHOT"
+}
 
 java {
     toolchain {
@@ -51,6 +71,18 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/MiLabuda/dh-scraping-commons")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                    ?: project.findProperty("gpr.user") as String?
+                password = System.getenv("GITHUB_TOKEN")
+                    ?: project.findProperty("gpr.key") as String?
+            }
         }
     }
 }
