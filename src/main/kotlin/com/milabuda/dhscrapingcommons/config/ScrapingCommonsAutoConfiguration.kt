@@ -2,10 +2,14 @@ package com.milabuda.dhscrapingcommons.config
 
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthChecker
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthProperties
+import com.milabuda.dhscrapingcommons.runner.CollectIdsPort
+import com.milabuda.dhscrapingcommons.runner.CollectPostsPort
+import com.milabuda.dhscrapingcommons.runner.JobRunner
 import com.milabuda.dhscrapingcommons.runner.JobRunnerSupport
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
@@ -35,4 +39,13 @@ class ScrapingCommonsAutoConfiguration {
         context: ApplicationContext,
         @Value("\${spring.application.name:scraper}") appName: String
     ): JobRunnerSupport = JobRunnerSupport(healthChecker, context, appName)
+
+    @Bean
+    @ConditionalOnBean(CollectIdsPort::class, CollectPostsPort::class)
+    @ConditionalOnMissingBean
+    fun jobRunner(
+        runnerSupport: JobRunnerSupport,
+        idCollector: CollectIdsPort,
+        postCollector: CollectPostsPort,
+    ): JobRunner = JobRunner(runnerSupport, idCollector, postCollector)
 }

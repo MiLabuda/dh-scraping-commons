@@ -2,6 +2,9 @@ package com.milabuda.dhscrapingcommons.config
 
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthChecker
 import com.milabuda.dhscrapingcommons.healthcheck.PortalHealthProperties
+import com.milabuda.dhscrapingcommons.runner.CollectIdsPort
+import com.milabuda.dhscrapingcommons.runner.CollectPostsPort
+import com.milabuda.dhscrapingcommons.runner.JobRunner
 import com.milabuda.dhscrapingcommons.runner.JobRunnerSupport
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
 import io.mockk.mockk
@@ -47,6 +50,22 @@ class ScrapingCommonsAutoConfigurationTest {
             }
     }
 
+    @Test
+    fun `JobRunner bean is registered when CollectIdsPort and CollectPostsPort are present`() {
+        contextRunner
+            .withUserConfiguration(MockPortsConfig::class.java)
+            .run { ctx ->
+                assertThat(ctx).hasSingleBean(JobRunner::class.java)
+            }
+    }
+
+    @Test
+    fun `JobRunner bean is NOT registered when ports are absent`() {
+        contextRunner.run { ctx ->
+            assertThat(ctx).doesNotHaveBean(JobRunner::class.java)
+        }
+    }
+
     // -------------------------------------------------------------------------
     // @ConditionalOnMissingBean — user-provided beans are NOT overridden
     // -------------------------------------------------------------------------
@@ -81,6 +100,17 @@ class ScrapingCommonsAutoConfigurationTest {
                 assertThat(ctx).hasSingleBean(JobRunnerSupport::class.java)
                 val runner = ctx.getBean(JobRunnerSupport::class.java)
                 assertThat(runner).isSameAs(CustomJobRunnerSupportConfig.INSTANCE)
+            }
+    }
+
+    @Test
+    fun `user-provided JobRunner bean is not replaced by auto-configuration`() {
+        contextRunner
+            .withUserConfiguration(MockPortsConfig::class.java, CustomJobRunnerConfig::class.java)
+            .run { ctx ->
+                assertThat(ctx).hasSingleBean(JobRunner::class.java)
+                val runner = ctx.getBean(JobRunner::class.java)
+                assertThat(runner).isSameAs(CustomJobRunnerConfig.INSTANCE)
             }
     }
 
@@ -129,6 +159,15 @@ class ScrapingCommonsAutoConfigurationTest {
     }
 
     @Configuration
+    class MockPortsConfig {
+        @Bean
+        fun collectIdsPort(): CollectIdsPort = mockk(relaxed = true)
+
+        @Bean
+        fun collectPostsPort(): CollectPostsPort = mockk(relaxed = true)
+    }
+
+    @Configuration
     class CustomUserAgentProviderConfig {
         companion object {
             val INSTANCE: UserAgentProvider = mockk()
@@ -156,5 +195,15 @@ class ScrapingCommonsAutoConfigurationTest {
 
         @Bean
         fun jobRunnerSupport(): JobRunnerSupport = INSTANCE
+    }
+
+    @Configuration
+    class CustomJobRunnerConfig {
+        companion object {
+            val INSTANCE: JobRunner = mockk()
+        }
+
+        @Bean
+        fun jobRunner(): JobRunner = INSTANCE
     }
 }
