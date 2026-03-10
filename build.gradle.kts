@@ -53,6 +53,9 @@ dependencies {
     // Resilience4j — implementation: used programmatically, not via AOP/annotations
     implementation(libs.resilience4j.retry)
 
+    // Jsoup — HTML document retrieval
+    implementation(libs.jsoup)
+
     // Caffeine — programmatic cache, no Spring Cache/AOP needed
     implementation(libs.caffeine)
 
