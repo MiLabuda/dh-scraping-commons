@@ -45,7 +45,6 @@ class ScrapingCommonsAutoConfiguration {
     ): JobRunnerSupport = JobRunnerSupport(healthChecker, context, appName)
 
     @Bean
-    @ConditionalOnBean(ObservationRegistry::class, RetryRegistry::class)
     @ConditionalOnMissingBean
     fun idsDocumentRetriever(
         userAgentProvider: UserAgentProvider,
@@ -54,7 +53,6 @@ class ScrapingCommonsAutoConfiguration {
     ): IdsDocumentRetriever = IdsDocumentRetriever(userAgentProvider, retryRegistry, observationRegistry)
 
     @Bean
-    @ConditionalOnBean(ObservationRegistry::class, RetryRegistry::class)
     @ConditionalOnMissingBean
     fun postDocumentRetriever(
         userAgentProvider: UserAgentProvider,

@@ -6,7 +6,11 @@ import com.milabuda.dhscrapingcommons.runner.CollectIdsPort
 import com.milabuda.dhscrapingcommons.runner.CollectPostsPort
 import com.milabuda.dhscrapingcommons.runner.JobRunner
 import com.milabuda.dhscrapingcommons.runner.JobRunnerSupport
+import com.milabuda.dhscrapingcommons.scraper.IdsDocumentRetriever
+import com.milabuda.dhscrapingcommons.scraper.PostDocumentRetriever
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
+import io.github.resilience4j.retry.RetryRegistry
+import io.micrometer.observation.ObservationRegistry
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -63,6 +67,20 @@ class ScrapingCommonsAutoConfigurationTest {
     fun `JobRunner bean is NOT registered when ports are absent`() {
         contextRunner.run { ctx ->
             assertThat(ctx).doesNotHaveBean(JobRunner::class.java)
+        }
+    }
+
+    @Test
+    fun `IdsDocumentRetriever bean is registered by default`() {
+        contextRunner.run { ctx ->
+            assertThat(ctx).hasSingleBean(IdsDocumentRetriever::class.java)
+        }
+    }
+
+    @Test
+    fun `PostDocumentRetriever bean is registered by default`() {
+        contextRunner.run { ctx ->
+            assertThat(ctx).hasSingleBean(PostDocumentRetriever::class.java)
         }
     }
 
@@ -156,6 +174,12 @@ class ScrapingCommonsAutoConfigurationTest {
     class WebClientBuilderConfig {
         @Bean
         fun webClientBuilder(): WebClient.Builder = WebClient.builder()
+
+        @Bean
+        fun retryRegistry(): RetryRegistry = mockk(relaxed = true)
+
+        @Bean
+        fun observationRegistry(): ObservationRegistry = mockk(relaxed = true)
     }
 
     @Configuration
