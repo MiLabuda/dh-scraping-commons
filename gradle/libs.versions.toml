@@ -4,8 +4,12 @@ kotlin = "2.2.21"
 kotlin-logging = "7.0.14"
 resilience4j = "2.3.0"
 caffeine = "3.2.3"
+mockk = "1.14.3"
+wiremock-spring-boot = "4.2.0"
 
 [libraries]
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+wiremock-spring-boot = { module = "org.wiremock.integrations:wiremock-spring-boot", version.ref = "wiremock-spring-boot" }
