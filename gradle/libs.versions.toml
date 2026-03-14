@@ -7,6 +7,8 @@ caffeine = "3.2.3"
 jsoup = "1.22.1"
 mockk = "1.14.3"
 wiremock-spring-boot = "4.2.0"
+spring-cloud-aws = "4.0.0"
+jackson-kotlin = "2.19.0"
 
 [libraries]
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -15,3 +17,5 @@ caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "c
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 wiremock-spring-boot = { module = "org.wiremock.integrations:wiremock-spring-boot", version.ref = "wiremock-spring-boot" }
+spring-cloud-aws-starter-dynamodb = { module = "io.awspring.cloud:spring-cloud-aws-starter-dynamodb", version.ref = "spring-cloud-aws" }
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }

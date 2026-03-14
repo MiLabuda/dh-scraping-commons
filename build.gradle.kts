@@ -50,6 +50,12 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework.boot:spring-boot-starter-webflux")
 
+    // Spring Cloud AWS DynamoDB — compileOnly: provided by consuming app
+    compileOnly(libs.spring.cloud.aws.starter.dynamodb)
+
+    // Jackson — compileOnly: provided by consuming Spring Boot app
+    compileOnly(libs.jackson.kotlin)
+
     // Resilience4j — implementation: used programmatically, not via AOP/annotations
     implementation(libs.resilience4j.retry)
 
