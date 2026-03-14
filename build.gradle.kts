@@ -50,8 +50,8 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework.boot:spring-boot-starter-webflux")
 
-    // Spring Cloud AWS DynamoDB — compileOnly: provided by consuming app
-    compileOnly(libs.spring.cloud.aws.starter.dynamodb)
+    // Spring Cloud AWS DynamoDB — implementation: all apps use snapshot feature
+    implementation(libs.spring.cloud.aws.starter.dynamodb)
 
     // Jackson — compileOnly: provided by consuming Spring Boot app
     compileOnly(libs.jackson.kotlin)
