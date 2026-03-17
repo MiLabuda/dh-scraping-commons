@@ -5,11 +5,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.context.ApplicationContext
-import org.springframework.stereotype.Component
 
 private val log = KotlinLogging.logger {}
 
-@Component
 class JobRunnerSupport(
     private val healthChecker: PortalHealthChecker,
     private val context: ApplicationContext,

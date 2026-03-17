@@ -8,14 +8,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.retry.Retry
 import io.github.resilience4j.retry.RetryConfig
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import java.time.Duration
 
 private val log = KotlinLogging.logger {}
 
-@Component
 class PortalHealthChecker(
     private val webClientBuilder: WebClient.Builder,
     private val userAgentProvider: UserAgentProvider,

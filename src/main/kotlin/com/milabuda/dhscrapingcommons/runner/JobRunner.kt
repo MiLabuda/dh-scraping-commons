@@ -3,11 +3,9 @@ package com.milabuda.dhscrapingcommons.runner
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.stereotype.Component
 
 private val log = KotlinLogging.logger {}
 
-@Component
 class JobRunner(
     private val runnerSupport: JobRunnerSupport,
     private val idCollector: CollectIdsPort,

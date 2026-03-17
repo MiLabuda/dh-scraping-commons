@@ -1,8 +1,5 @@
 package com.milabuda.dhscrapingcommons.util
 
-import org.springframework.stereotype.Component
-
-@Component
 class UserAgentProvider {
 
     fun provide(): String = USER_AGENTS.random()
