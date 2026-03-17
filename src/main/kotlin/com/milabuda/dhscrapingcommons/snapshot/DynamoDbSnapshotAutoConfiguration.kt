@@ -1,10 +1,6 @@
-package com.milabuda.dhscrapingcommons.config
+package com.milabuda.dhscrapingcommons.snapshot
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.milabuda.dhscrapingcommons.snapshot.DynamoDbSnapshotProperties
-import com.milabuda.dhscrapingcommons.snapshot.DynamoDbSnapshotRepository
-import com.milabuda.dhscrapingcommons.snapshot.PropertySnapshot
-import com.milabuda.dhscrapingcommons.snapshot.SnapshotPort
 import io.awspring.cloud.dynamodb.DynamoDbTableNameResolver
 import io.awspring.cloud.dynamodb.DynamoDbTemplate
 import org.springframework.boot.autoconfigure.AutoConfiguration

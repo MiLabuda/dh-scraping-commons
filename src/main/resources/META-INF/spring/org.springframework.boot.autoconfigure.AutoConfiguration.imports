@@ -1,2 +1,5 @@
-com.milabuda.dhscrapingcommons.config.ScrapingCommonsAutoConfiguration
-com.milabuda.dhscrapingcommons.config.DynamoDbSnapshotAutoConfiguration
+com.milabuda.dhscrapingcommons.util.UtilAutoConfiguration
+com.milabuda.dhscrapingcommons.healthcheck.HealthCheckAutoConfiguration
+com.milabuda.dhscrapingcommons.scraper.ScraperAutoConfiguration
+com.milabuda.dhscrapingcommons.runner.JobRunnerAutoConfiguration
+com.milabuda.dhscrapingcommons.snapshot.DynamoDbSnapshotAutoConfiguration
