@@ -53,6 +53,15 @@ dependencies {
     // Spring Cloud AWS DynamoDB — implementation: all apps use snapshot feature
     implementation(libs.spring.cloud.aws.starter.dynamodb)
 
+    // Spring Cloud AWS S3 — compileOnly: only needed when image archive feature is used
+    compileOnly(libs.spring.cloud.aws.starter.s3)
+
+    // Coroutines — implementation: used in S3ImageArchiver / S3Mediator
+    implementation(libs.kotlinx.coroutines.core)
+
+    // Micrometer — compileOnly: provided by consuming Spring Boot app (Actuator)
+    compileOnly("io.micrometer:micrometer-core")
+    compileOnly("io.micrometer:micrometer-observation")
     // Jackson — compileOnly: provided by consuming Spring Boot app
     compileOnly(libs.jackson.kotlin)
 
@@ -74,6 +83,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation(libs.mockk)
     testImplementation(libs.wiremock.spring.boot)
+    // Make compileOnly deps available to tests
+    testImplementation(libs.spring.cloud.aws.starter.s3)
+    testImplementation("io.micrometer:micrometer-core")
+    testImplementation("io.micrometer:micrometer-observation")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

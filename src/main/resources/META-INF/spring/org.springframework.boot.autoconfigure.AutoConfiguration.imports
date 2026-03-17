@@ -3,3 +3,4 @@ com.milabuda.dhscrapingcommons.healthcheck.HealthCheckAutoConfiguration
 com.milabuda.dhscrapingcommons.scraper.ScraperAutoConfiguration
 com.milabuda.dhscrapingcommons.runner.JobRunnerAutoConfiguration
 com.milabuda.dhscrapingcommons.snapshot.DynamoDbSnapshotAutoConfiguration
+com.milabuda.dhscrapingcommons.imagearchive.ImageArchiveAutoConfiguration
