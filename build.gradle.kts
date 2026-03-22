@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
-    kotlin("plugin.allopen") version "2.2.21"
     id("io.spring.dependency-management") version "1.1.7"
     `java-library`
     `maven-publish`
@@ -95,10 +94,6 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
     }
-}
-
-allOpen {
-    annotation("io.micrometer.observation.annotation.Observed")
 }
 
 tasks.test {

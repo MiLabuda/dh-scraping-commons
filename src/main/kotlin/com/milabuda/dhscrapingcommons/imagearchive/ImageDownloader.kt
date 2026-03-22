@@ -22,7 +22,7 @@ private fun HttpResponse<InputStream>.validateContentLength(url: String): Long =
         ?.asLong
         ?: throw ImageDownloadException.MissingContentLength(url)
 
-class ImageDownloader(
+open class ImageDownloader(
     private val client: HttpClient,
     private val userAgentProvider: UserAgentProvider,
 ) {

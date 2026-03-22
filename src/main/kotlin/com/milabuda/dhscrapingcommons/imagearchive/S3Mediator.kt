@@ -9,7 +9,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectResponse
 import java.io.InputStream
 
-class S3Mediator(
+open class S3Mediator(
     private val s3Client: S3Client,
 ) {
 

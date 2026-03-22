@@ -24,7 +24,7 @@ private fun determineContentType(photoUrl: String): String =
         else -> "application/octet-stream"
     }
 
-class S3ImageArchiver(
+open class S3ImageArchiver(
     private val s3props: S3ImageBucketProperties,
     private val keyBuilder: S3ImageKeyBuilder,
     private val imageDownloader: ImageDownloader,
