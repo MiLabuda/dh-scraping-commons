@@ -28,7 +28,8 @@ class ImageArchiveAutoConfiguration {
     fun imageDownloader(
         httpClient: HttpClient,
         userAgentProvider: UserAgentProvider,
-    ): ImageDownloader = ImageDownloader(httpClient, userAgentProvider)
+        observationRegistry: ObservationRegistry,
+    ): ImageDownloader = ImageDownloader(httpClient, userAgentProvider, observationRegistry)
 
     @Bean
     @ConditionalOnMissingBean
