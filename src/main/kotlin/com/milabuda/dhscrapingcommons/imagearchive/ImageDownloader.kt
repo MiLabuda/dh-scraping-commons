@@ -2,8 +2,7 @@ package com.milabuda.dhscrapingcommons.imagearchive
 
 import com.milabuda.dhscrapingcommons.util.UserAgentProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.micrometer.observation.Observation
-import io.micrometer.observation.ObservationRegistry
+import io.micrometer.observation.annotation.Observed
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URI
@@ -26,24 +25,21 @@ private fun HttpResponse<InputStream>.validateContentLength(url: String): Long =
 open class ImageDownloader(
     private val client: HttpClient,
     private val userAgentProvider: UserAgentProvider,
-    private val observationRegistry: ObservationRegistry,
-) {
+) : ImageDownloaderPort {
 
-    fun downloadImage(photoUrl: String): Result<DownloadResult> {
-        val observation = Observation.createNotStarted("property.post.collection.image.download", observationRegistry)
-            .contextualName("Downloading property post images from origin URL")
-            .lowCardinalityKeyValue("operation", "downloadPosts")
-
-        return observation.observe<Result<DownloadResult>> {
-            runCatching {
-                val request = buildRequest(photoUrl)
-                val response = client.send(request, HttpResponse.BodyHandlers.ofInputStream())
-                handleResponse(response, photoUrl)
-            }.onFailure { e ->
-                log.error(e) { "Failed to download image from URL [$photoUrl]" }
-            }
-        } ?: Result.failure(IllegalStateException("Observation returned null for $photoUrl"))
-    }
+    @Observed(
+        name = "property.post.collection.image.download",
+        contextualName = "Downloading property post images from origin URL",
+        lowCardinalityKeyValues = ["operation", "downloadPosts"],
+    )
+    override fun downloadImage(photoUrl: String): Result<DownloadResult> =
+        runCatching {
+            val request = buildRequest(photoUrl)
+            val response = client.send(request, HttpResponse.BodyHandlers.ofInputStream())
+            handleResponse(response, photoUrl)
+        }.onFailure { e ->
+            log.error(e) { "Failed to download image from URL [$photoUrl]" }
+        }
 
     private fun handleResponse(response: HttpResponse<InputStream>, url: String): DownloadResult =
         when (response.statusCode()) {

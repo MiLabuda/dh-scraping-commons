@@ -28,8 +28,7 @@ class ImageArchiveAutoConfiguration {
     fun imageDownloader(
         httpClient: HttpClient,
         userAgentProvider: UserAgentProvider,
-        observationRegistry: ObservationRegistry,
-    ): ImageDownloader = ImageDownloader(httpClient, userAgentProvider, observationRegistry)
+    ): ImageDownloaderPort = ImageDownloader(httpClient, userAgentProvider)
 
     @Bean
     @ConditionalOnMissingBean
@@ -41,7 +40,8 @@ class ImageArchiveAutoConfiguration {
     @ConditionalOnMissingBean
     fun s3Mediator(
         s3Client: S3Client,
-    ): S3Mediator = S3Mediator(s3Client)
+        observationRegistry: ObservationRegistry,
+    ): S3MediatorPort = S3Mediator(s3Client, observationRegistry)
 
     @Bean
     @ConditionalOnMissingBean
@@ -52,12 +52,12 @@ class ImageArchiveAutoConfiguration {
     fun s3ImageArchiver(
         s3ImageBucketProperties: S3ImageBucketProperties,
         s3ImageKeyBuilder: S3ImageKeyBuilder,
-        imageDownloader: ImageDownloader,
-        s3Mediator: S3Mediator,
+        imageDownloader: ImageDownloaderPort,
+        s3Mediator: S3MediatorPort,
         networkThrottle: Semaphore,
         meterRegistry: MeterRegistry,
         observationRegistry: ObservationRegistry,
-    ): S3ImageArchiver = S3ImageArchiver(
+    ): ImageArchiver = S3ImageArchiver(
         s3ImageBucketProperties,
         s3ImageKeyBuilder,
         imageDownloader,

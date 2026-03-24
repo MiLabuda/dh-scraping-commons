@@ -11,14 +11,14 @@ import java.io.InputStream
 
 open class S3Mediator(
     private val s3Client: S3Client,
-) {
+) : S3MediatorPort {
 
     @Observed(
         name = "property.post.collection.image.upload",
         contextualName = "Uploading property post images to S3",
         lowCardinalityKeyValues = ["operation", "uploadPosts"],
     )
-    suspend fun delegateUploadToS3(
+    override suspend fun delegateUploadToS3(
         putObjectRequest: PutObjectRequest,
         inputStream: InputStream,
         contentSize: Long,

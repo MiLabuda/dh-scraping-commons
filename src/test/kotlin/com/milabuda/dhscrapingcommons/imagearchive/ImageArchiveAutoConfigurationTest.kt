@@ -37,11 +37,10 @@ class ImageArchiveAutoConfigurationTest {
     @Test
     fun `all image-archive beans are registered when S3Client is present`() {
         contextRunner.run { ctx ->
-            assertThat(ctx).hasSingleBean(ImageDownloader::class.java)
+            assertThat(ctx).hasSingleBean(ImageDownloaderPort::class.java)
             assertThat(ctx).hasSingleBean(S3ImageKeyBuilder::class.java)
-            assertThat(ctx).hasSingleBean(S3Mediator::class.java)
+            assertThat(ctx).hasSingleBean(S3MediatorPort::class.java)
             assertThat(ctx).hasSingleBean(Semaphore::class.java)
-            assertThat(ctx).hasSingleBean(S3ImageArchiver::class.java)
             assertThat(ctx).hasSingleBean(ImageArchiver::class.java)
         }
     }

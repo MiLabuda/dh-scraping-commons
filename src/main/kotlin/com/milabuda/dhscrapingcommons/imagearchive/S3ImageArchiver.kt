@@ -3,7 +3,6 @@ package com.milabuda.dhscrapingcommons.imagearchive
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.observation.Observation
 import io.micrometer.observation.ObservationRegistry
 import io.micrometer.observation.annotation.Observed
 import jakarta.annotation.PostConstruct
@@ -27,8 +26,8 @@ private fun determineContentType(photoUrl: String): String =
 open class S3ImageArchiver(
     private val s3props: S3ImageBucketProperties,
     private val keyBuilder: S3ImageKeyBuilder,
-    private val imageDownloader: ImageDownloader,
-    private val s3Mediator: S3Mediator,
+    private val imageDownloader: ImageDownloaderPort,
+    private val s3Mediator: S3MediatorPort,
     private val networkThrottle: Semaphore,
     private val meterRegistry: MeterRegistry,
     private val observationRegistry: ObservationRegistry,
@@ -96,9 +95,9 @@ open class S3ImageArchiver(
         propertyId: String,
         photoUrl: String,
         sequenceNumber: Int,
-        parentObservation: Observation?,
+        parentObservation: io.micrometer.observation.Observation?,
     ): ImageUploadResult? = networkThrottle.withPermit {
-        // Restore parent observation in this IO thread so that @Observed on
+        // Restore parent observation in this IO thread so that child observations in
         // ImageDownloader and S3Mediator produce child spans instead of root spans.
         val scope = parentObservation?.openScope()
         try {
@@ -145,4 +144,3 @@ open class S3ImageArchiver(
             .contentLength(downloadResult.contentLength)
             .build()
 }
-
