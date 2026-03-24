@@ -40,8 +40,7 @@ class ImageArchiveAutoConfiguration {
     @ConditionalOnMissingBean
     fun s3Mediator(
         s3Client: S3Client,
-        observationRegistry: ObservationRegistry,
-    ): S3MediatorPort = S3Mediator(s3Client, observationRegistry)
+    ): S3MediatorPort = S3Mediator(s3Client)
 
     @Bean
     @ConditionalOnMissingBean
