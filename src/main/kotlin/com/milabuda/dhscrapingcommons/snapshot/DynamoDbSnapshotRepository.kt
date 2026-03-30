@@ -15,7 +15,7 @@ class DynamoDbSnapshotRepository(
     override fun save(propertyId: String, scraped: ScrappedBaseDto) {
         runCatching {
             val snapshot = PropertySnapshot(
-                propertyId = propertyId,
+                id = propertyId,
                 payload = objectMapper.writeValueAsString(scraped),
                 savedAt = Instant.now().toString()
             )

@@ -6,7 +6,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 @DynamoDbBean
 data class PropertySnapshot(
     @get:DynamoDbPartitionKey
-    var propertyId: String = "",
+    var id: String = "",
     var payload: String = "",
     var savedAt: String = ""
 )
